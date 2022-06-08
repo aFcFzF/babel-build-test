@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "rootDir": ".",
+    "typeRoots": ["./node_modules/@types", "./src/static/types"],
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "module": "CommonJS",
+    "strict": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@api": ["src/common/api"],
+      "@api/*": ["src/common/api/*"],
+    }
+  },
+  "include": ["src", "build/*"],
+  "exclude": [
+    "src/preScript.js"
+  ]
+}
