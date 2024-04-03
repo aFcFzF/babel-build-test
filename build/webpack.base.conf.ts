@@ -35,7 +35,7 @@ const lessLoader = [
 ];
 
 const entry = {
-  app: './src/app/index.js',
+  app: './src/app/index.tsx',
 };
 
 const CONFIG: Configuration = {
