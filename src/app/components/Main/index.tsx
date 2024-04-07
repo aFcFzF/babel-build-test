@@ -7,20 +7,23 @@ import {useSetState} from 'ahooks';
 import {FormView, FormViewProps} from '@tencent/ptp-fe-common';
 import type UseForm from '@tencent/ptp-fe-common/es/components/FormView/hooks/useForm';
 import '@tencent/ptp-fe-common/dist/ptp-fe-common.min.css';
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import { Button } from '@tencent/spaui';
 
 const options: FormViewProps['options'] = ({payloads, customFunctions}) => {
-  const { job } = payloads as any;
+  const { job, form } = payloads as any;
   const { updateState } = customFunctions as any;
 
   console.log('job: ', job, updateState);
 
   return {
     submitConfig: {
-      action: (...args) => {
-        console.log('args: ', args);
-        return Promise.resolve({name: '1111'});
+      action: (form) => {
+        console.log('form: ', form);
+        return Promise.resolve({
+          text: '表单结果',
+          form,
+        });
       }
     },
     groups: [{
@@ -47,12 +50,18 @@ const options: FormViewProps['options'] = ({payloads, customFunctions}) => {
         required: true,
         config: {
           placeholder: '请输入年龄',
+          onChange(...args: any[]) {
+            // 半受控
+            console.log('=== onChange: ', args);
+            updateState({job: false});
+          }
         },
         extra: '请输入年龄 - extra',
+        // display 通过job控制
         display: [{
           name: 'gender',
           value: 'male',
-        }]
+        }],
       }]
     }],
   };
@@ -68,9 +77,15 @@ export const Main = (): JSX.Element => {
 
   console.log('formRef: ', formRef);
 
+  useEffect(() => {
+    formRef.current?.form.setFieldsValue({ });
+    updateState({});
+  }, []);
+
   const onSubmit = async () => {
+    const validResult = await formRef.current?.form.validate();
     const res = await formRef.current?.form.onSubmit({});
-    console.log('res: ', res);
+    console.log('res: ', validResult, res);
   };
 
   return (
