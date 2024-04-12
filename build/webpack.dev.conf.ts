@@ -35,6 +35,10 @@ const DEV_CONF = merge(base, {
     historyApiFallback: {
       rewrites: [
         {
+          from: /^\/app\//,
+          to: '/app',
+        },
+        {
           from: /^\/recruit\/app\//,
           to: '/recruit/app',
         },

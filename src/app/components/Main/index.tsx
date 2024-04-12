@@ -9,10 +9,13 @@ import type UseForm from '@tencent/ptp-fe-common/es/components/FormView/hooks/us
 import '@tencent/ptp-fe-common/dist/ptp-fe-common.min.css';
 import {useEffect, useRef} from 'react';
 import { Button } from '@tencent/spaui';
+import { hooks } from '@tencent/ptp-fe-common';
+
+const { useDialog } = hooks;
 
 const options: FormViewProps['options'] = ({payloads, customFunctions}) => {
   const { job, form } = payloads as any;
-  const { updateState } = customFunctions as any;
+  const { updateState, setDialogOptions, setFormFieldValue } = customFunctions as any;
 
   console.log('job: ', job, updateState);
 
@@ -34,6 +37,24 @@ const options: FormViewProps['options'] = ({payloads, customFunctions}) => {
         defaultValue: 'male',
         required: true,
         config: {
+          preventDefaultChangeHandler: true,
+          onChange(_: unknown, val: string) {
+            setDialogOptions({
+              type: 'dialog',
+              body: '确认修改吗',
+              config: {
+                title: '确认？'
+              },
+              onSuccess() {
+                setFormFieldValue?.({
+                  'gender': val,
+                });
+              }
+            });
+
+
+            console.log(val)
+          },
           theme: 'light',
           data: [
             {label: '男', value: 'male'},
@@ -44,11 +65,14 @@ const options: FormViewProps['options'] = ({payloads, customFunctions}) => {
       },
       {
         name: 'age',
-        type: 'input',
+        // type: 'input',
+        type: 'custom',
+        content: () => <></>,
         label: '年龄',
-        defaultValue: '',
+        defaultValue: '111',
         required: true,
         config: {
+          value: '111',
           placeholder: '请输入年龄',
           onChange(...args: any[]) {
             // 半受控
@@ -72,6 +96,8 @@ export const Main = (): JSX.Element => {
   const [state, updateState] = useSetState({
     job: 'programmer',
   });
+
+  const {Dialog, setDialogOptions} = useDialog();
 
   const formRef = useRef<{form: ReturnType<typeof UseForm>}>(null);
 
@@ -97,9 +123,10 @@ export const Main = (): JSX.Element => {
           age: ''
         }}
         payloads={state}
-        customFunctions={{updateState}}
+        customFunctions={{updateState, setDialogOptions, setFormFieldValue: formRef.current?.form.setFieldsValue}}
         options={options}
       />
+      {Dialog}
       <Button displayType="primary" onClick={onSubmit}>提交</Button>
     </>
   );

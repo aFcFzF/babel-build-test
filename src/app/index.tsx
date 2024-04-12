@@ -1,5 +1,7 @@
 import { createRoot } from 'react-dom/client';
-import {Main} from './components/Main';
+import { BrowserRouter, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {Case1} from './components/Case1';
+// import { Main } from './components/Main';
 
 
 let elRoot = document.querySelector('#root');
@@ -10,5 +12,26 @@ if (!elRoot) {
 }
 
 const root = createRoot(elRoot);
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <>hello</>,
+  },
+  {
+    path: '/case1',
+    element: <Case1 uid="123" />,
+  },
+  {
+    path: '*',
+    element: <>not found</>
+  }
+], {basename: '/app'});
+
+const Main = (): JSX.Element => {
+  return (
+    <RouterProvider  router={router} />
+  );
+}
 
 root.render(<Main />);
