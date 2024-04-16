@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import {Case1} from './components/Case1';
+import {Case2} from './components/Case2';
 // import { Main } from './components/Main';
 
 
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/case1',
     element: <Case1 uid="123" />,
+  },
+  {
+    path: '/case2',
+    element: <Case2 />,
   },
   {
     path: '*',
