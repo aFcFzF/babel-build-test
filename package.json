@@ -49,6 +49,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.3",
+    "@tencent/adhome_common": "^1.1.19",
+    "@tencent/finance-fe-common": "^0.0.1",
+    "@tencent/hel-micro": "^4.1.10",
     "@tencent/ptp-fe-common": "^0.4.96",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -161,7 +161,7 @@ const CONFIG: Configuration = {
       filename: `${item}/index.html`,
       chunks: [item],
       template: path.join(__dirname, 'template.html'),
-      inject: true,
+      inject: 'body',
     })),
   ],
 };
