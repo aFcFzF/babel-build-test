@@ -4,18 +4,23 @@
  */
 
 import { useEffect } from 'react';
+import axios from 'axios';
+import { Button } from '@tencent/spaui';
+import { useMemoizedFn } from 'ahooks';
+import {downloadChunks} from './util';
 
 export const Case4 = (): JSX.Element => {
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('======timeout执行了');
-    }, 1000);
-  }, []);
+  const downloadHandler = useMemoizedFn(async () => {
+    downloadChunks({
+      url: 'http://127.0.0.1:8181/demo/api/download/bigFile',
+    });
+  });
 
   return (
     <div>
-      123
+      <Button displayType="primary" onClick={downloadHandler}>
+        分片下载
+      </Button>
     </div>
   );
 };
