@@ -23,9 +23,14 @@ export interface DownloadChunksOption {
   data?: Record<string, any>;
 
   /**
-   * 分片大小(kb) 默认3MB: 3 * 1024
+   * 请求头
    */
-  chunkSize?: number;
+  headers?: Record<string, any>;
+
+  /**
+   * 分片大小byte
+   */
+  chunkSizeByte?: number;
 
   /**
    * 最大并发请求数
@@ -36,6 +41,11 @@ export interface DownloadChunksOption {
    * 单个分片最大自动重试次数
    */
   maxChunkAutoRetry?: number;
+
+  /**
+   * 自定义首帧请求进度
+   */
+  firstChunkProgress?: number;
 }
 
 export interface GetChunkOption extends Pick<DownloadChunksOption, 'data'> {
@@ -59,22 +69,29 @@ export interface GetChunkFailRet {
 
 export type GetChunkRet = GetChunkSuccessRet | GetChunkFailRet;
 
-export type ChunkInfo = {
+export type ChunkInfoStatus = 'not-start' | 'fetching' | 'success' | 'fail';
+
+export interface ChunkInfo {
   range: `${number}-${number}`;
   chunkData: ArrayBuffer | null;
   index: number;
-  retryCount: number;
+  fetchCount: number;
   abortController: AbortController;
-  status: 'not_start' | 'success' | 'fail';
-};
-
-export interface GetChunksRecursiveOption extends Pick<DownloadChunksOption, 'data'> {
-  headers?: AxiosRequestHeaders;
+  status: ChunkInfoStatus;
 }
 
 export interface ChunksDownloadRet {
-  status: 'success' | 'fail' | 'terminate';
+  status: 'download-success' | 'download-fail' | 'terminate' | 'chunk-progress';
   totalChunks: number;
   successChunks: number;
   percent: number;
+  fileName: string;
+  fileTotalBytes: number;
+}
+
+export interface EventValue {
+  'download-success': [ChunksDownloadRet];
+  'download-fail': [ChunksDownloadRet];
+  terminate: [ChunksDownloadRet];
+  'chunk-progress': [ChunksDownloadRet];
 }

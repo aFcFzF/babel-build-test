@@ -1,0 +1,103 @@
+@ptp-fe-progress-prefix: ptp-fe-progress;
+
+@ptp-fe-progress-color-active: #296bef;
+@ptp-fe-progress-color-success: #5ac724;
+@ptp-fe-progress-color-error: #e73d2e;
+
+
+@keyframes ptpProgressActive {
+  0% {
+    transform: translateX(-100%) scaleX(0);
+    opacity: 0.1;
+  }
+  20% {
+    transform: translateX(-100%) scaleX(0);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0) scaleX(1);
+    opacity: 0;
+  }
+}
+
+.@{ptp-fe-progress-prefix} {
+  display: flex;
+  align-items: center;
+  height: 24px;
+
+  &-content {
+    position: relative;
+    border-radius: 25px;
+    height: 8px;
+    background-color: #f0f0f0;
+    flex: auto;
+    overflow: hidden;
+
+    &-inner {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background-color: #296bef;
+      border-radius: 25px;
+      overflow: hidden;
+      will-change: width;
+      transition: width ease-in-out 100ms;
+
+      &::before {
+        position: absolute;
+        inset: 0;
+        background-color: #fff;
+        border-radius: 25px;
+        opacity: 1;
+        animation-name: ptpProgressActive;
+        animation-duration: 2.4s;
+        animation-timing-function: ease-in;
+        animation-iteration-count: infinite;
+        content: '';
+        overflow: hidden;
+        z-index: 1;
+        display: none;
+      }
+    }
+  }
+
+  &-active {
+    .@{ptp-fe-progress-prefix}-content-inner::before {
+      display: block;
+    }
+  }
+
+  &-success {
+    .@{ptp-fe-progress-prefix} {
+      &-content-inner {
+        background-color: @ptp-fe-progress-color-success;
+      }
+
+      &-info {
+        color: @ptp-fe-progress-color-success;
+      }
+    }
+  }
+
+  &-error {
+    .@{ptp-fe-progress-prefix} {
+      &-content-inner {
+        background-color: @ptp-fe-progress-color-error;
+      }
+
+      &-info {
+        color: @ptp-fe-progress-color-error;
+      }
+    }
+  }
+
+  &-info {
+    display: flex;
+    align-items: center;
+    width: 44px;
+    padding-left: 8px;
+    font-size: 14px;
+    flex: none;
+  }
+}

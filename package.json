@@ -39,6 +39,8 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.10.0",
     "html-webpack-plugin": "^5.5.0",
+    "less": "^4.2.0",
+    "less-loader": "^12.2.0",
     "mini-css-extract-plugin": "^2.6.0",
     "style-loader": "^3.3.4",
     "ts-node": "^10.8.1",
