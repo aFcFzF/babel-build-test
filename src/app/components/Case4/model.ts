@@ -30,13 +30,12 @@ export class ChunksDownload extends Emitter<EventValue> {
   private fileContentType = '';
   private fileHash = '';
   private fileTotalBytes = 0;
-  private option: Required<
+  private option!: Required<
     Pick<DownloadChunksOption, 'chunkSizeByte' | 'url' | 'maxParallel' | 'maxChunkAutoRetry' | 'firstChunkProgress'>
   > &
     Pick<DownloadChunksOption, 'data'>;
 
-  constructor(option: DownloadChunksOption) {
-    super();
+  public updateOption = (option: DownloadChunksOption): void => {
     const {
       // 分片默认3M，小于则直接下载
       chunkSizeByte = 3 * 1024 * 1024,
@@ -54,9 +53,13 @@ export class ChunksDownload extends Emitter<EventValue> {
       firstChunkProgress,
       ...extra,
     };
-  }
+  };
 
   public download = async (): Promise<void> => {
+    if (!this.option) {
+      throw new Error('先调用updateOption初始化!');
+    }
+
     // 禁止重复下载
     if (!this.terminated) {
       return;
@@ -67,6 +70,18 @@ export class ChunksDownload extends Emitter<EventValue> {
 
     const firstAbortController = new AbortController();
     this.emitDownloadRet('chunk-progress');
+
+    // 分片下载
+    this.chunkInfoList = [
+      {
+        abortController: firstAbortController,
+        range: `${0}-${chunkSizeByte}`,
+        chunkData: null,
+        index: 0,
+        fetchCount: 0,
+        status: 'fetching',
+      },
+    ];
 
     const firstChunk = await this.getChunk({
       abortController: firstAbortController,
@@ -83,6 +98,9 @@ export class ChunksDownload extends Emitter<EventValue> {
     }
 
     const { chunkData, chunkHeaders } = firstChunk;
+
+    this.chunkInfoList[0].chunkData = chunkData;
+    this.chunkInfoList[0].status = 'success';
 
     // chunk是否格式正确
     console.log('headers ===', chunkHeaders);
@@ -117,18 +135,6 @@ export class ChunksDownload extends Emitter<EventValue> {
 
       this.emitDownloadRet('download-success');
     }
-
-    // 分片下载
-    this.chunkInfoList = [
-      {
-        abortController: firstAbortController,
-        range: `${0}-${chunkSizeByte}`,
-        chunkData,
-        index: 0,
-        fetchCount: 0,
-        status: 'success',
-      },
-    ];
 
     const chunksLen = Math.ceil(totalBytes / chunkSizeByte) - 1;
     const chunkRangeList = Array.from({ length: chunksLen }, (_, idx) => {
@@ -185,14 +191,16 @@ export class ChunksDownload extends Emitter<EventValue> {
 
   private emitDownloadRet = (status: ChunksDownloadRet['status']): void => {
     const successChunks = this.chunkInfoList.filter((item) => item.status === 'success').length;
-    let percent = Math.ceil((successChunks / this.chunkInfoList.length) * 100);
+    let percent = +((successChunks / this.chunkInfoList.length) * 100).toFixed(2);
     // 自定义首帧进度
     percent = percent > this.option.firstChunkProgress ? percent : this.option.firstChunkProgress;
     this.emit(status, {
       status,
       totalChunks: this.chunkInfoList.length,
       successChunks,
-      percent,
+      // 避免数字没有小数点部分闪动
+      percent: percent === 100 ? '100' : percent.toFixed(2),
+      percentNum: percent,
       fileName: this.fileName,
       fileTotalBytes: this.fileTotalBytes,
     });

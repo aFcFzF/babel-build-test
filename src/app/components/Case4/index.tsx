@@ -14,6 +14,7 @@ export const Case4 = (): JSX.Element => {
       downloadConfig: {
         url: 'http://127.0.0.1:8181/demo/api/download/bigFile',
         // chunkSizeByte: 10,
+        maxParallel: 1,
       },
     });
   };

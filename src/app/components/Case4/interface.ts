@@ -84,7 +84,8 @@ export interface ChunksDownloadRet {
   status: 'download-success' | 'download-fail' | 'terminate' | 'chunk-progress';
   totalChunks: number;
   successChunks: number;
-  percent: number;
+  percent: string;
+  percentNum: number;
   fileName: string;
   fileTotalBytes: number;
 }

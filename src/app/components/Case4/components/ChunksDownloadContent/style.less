@@ -1,12 +1,26 @@
 @ptp-fe-chunks-download-content-prefix: ptp-fe-chunks-download-content;
 
 .@{ptp-fe-chunks-download-content-prefix} {
+  &-header {
+    height: 24px;
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 16px;
+
+    &-close {
+      color: #ccc;
+      cursor: pointer;
+    }
+  }
+
   &-info {
     display: flex;
     align-items: center;
 
     &-icon {
       flex: none;
+      width: 14px;
+      height: 14px;
     }
 
     &-text {
@@ -15,6 +29,13 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+
+      &-retry {
+        flex: none;
+        margin-left: 8px;
+      }
     }
   }
 }

@@ -6,7 +6,7 @@
 import { DialogOptions } from '@tencent/ptp-fe-common/cjs/components/Dialog/types';
 import { useDialog } from '@tencent/ptp-fe-common/cjs/hooks';
 import { ReactNode, useCallback, useEffect, useRef } from 'react';
-import { DownloadChunksOption } from '../../interface';
+import { ChunksDownloadRet, DownloadChunksOption } from '../../interface';
 import { ChunksDownloadContent, ChunksDownloadContentProps } from '../ChunksDownloadContent';
 import { ChunksDownload } from '../../model';
 
@@ -14,14 +14,31 @@ export interface SetDownloadDialogOptions extends Partial<DialogOptions> {
   downloadConfig: ChunksDownloadContentProps;
 }
 
-const DialogContent = (props: { payload: DownloadChunksOption }): JSX.Element => {
+const DialogContent = (props: { payload: DownloadChunksOption & { hideDialog: () => void } }): JSX.Element => {
+  const {
+    payload: { hideDialog },
+  } = props;
+
   const ref = useRef<ChunksDownload>(null);
 
   useEffect(() => {
-    ref.current?.download();
-  }, []);
+    ref?.current?.download();
+  }, [ref]);
 
-  return <ChunksDownloadContent ref={ref} {...props.payload} />;
+  const onDownloadChange = (data: ChunksDownloadRet): void => {
+    if (data.status === 'download-success') {
+      hideDialog();
+    }
+  };
+
+  return (
+    <ChunksDownloadContent
+      ref={ref}
+      {...props.payload}
+      onDownloadChange={onDownloadChange}
+      onDialogClose={hideDialog}
+    />
+  );
 };
 
 export interface UseChunksDownloadDialogRet {
@@ -38,17 +55,27 @@ export const useChunksDownloadDialog = (): UseChunksDownloadDialogRet => {
     (option: SetDownloadDialogOptions) => {
       setDialogOptions({
         body: DialogContent,
-        payload: option.downloadConfig,
+        payload: {
+          ...option.downloadConfig,
+          hideDialog,
+        },
         ...option,
         config: {
           title: '文件下载',
-          contentStyle: { width: 600, height: 220 },
+          bodyStyle: {
+            paddingTop: 16,
+          },
+          contentStyle: { width: 600 },
           cancelButton: false,
+          submitButton: false,
+          closeButton: false,
+          hideFooter: true,
+          hideHeader: true,
           ...option.config,
         },
       });
     },
-    [setDialogOptions],
+    [setDialogOptions, hideDialog],
   );
 
   return {
