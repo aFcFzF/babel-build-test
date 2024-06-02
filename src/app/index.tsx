@@ -1,11 +1,11 @@
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Case1 } from './components/Case1';
 import { Case2 } from './components/Case2';
 import { Case3 } from './components/Case3';
 import { Case4 } from './components/Case4';
+import { Case5 } from './components/Case5';
 // import { Main } from './components/Main';
-
 
 let elRoot = document.querySelector('#root');
 if (!elRoot) {
@@ -16,42 +16,45 @@ if (!elRoot) {
 
 const root = createRoot(elRoot);
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <>hello</>,
-  },
-  {
-    path: '/case1',
-    element: <Case1 uid="123" />,
-  },
-  {
-    path: '/case2',
-    element: <Case2 />,
-  },
-  {
-    loader() {
-      return {
-        name: "111",
-      }
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <>hello</>,
     },
-    path: '/case3',
-    element: <Case3 />,
-  },
-  {
-    path: '/case4',
-    element: <Case4 />,
-  },
-  {
-    path: '*',
-    element: <>not found</>
-  }
-], {basename: '/app'});
+    {
+      path: '/case1',
+      element: <Case1 uid="123" />,
+    },
+    {
+      path: '/case2',
+      element: <Case2 />,
+    },
+    {
+      loader() {
+        return {
+          name: '111',
+        };
+      },
+      path: '/case3',
+      element: <Case3 />,
+    },
+    {
+      path: '/case4',
+      element: <Case4 />,
+    },
+    {
+      path: '/case5',
+      element: <Case5 />,
+    },
+    {
+      path: '*',
+      element: <>not found</>,
+    },
+  ],
+  { basename: '/app' },
+);
 
-const Main = (): JSX.Element => {
-  return (
-    <RouterProvider  router={router} />
-  );
-}
+const Main = (): JSX.Element => <RouterProvider router={router} />;
 
 root.render(<Main />);
