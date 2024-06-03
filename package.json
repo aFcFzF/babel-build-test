@@ -53,11 +53,13 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.3",
+    "@byron-react/antd-virtual-table": "^1.2.8",
     "@tencent/adhome_common": "^1.1.19",
     "@tencent/finance-fe-common": "^0.0.1",
     "@tencent/hel-micro": "^4.1.10",
     "@tencent/ptp-fe-common": "^0.4.96",
     "@tencent/spaui": "^3.0.328-beta.0",
+    "antd": "^5.17.4",
     "event-emitter": "^0.3.5",
     "eventemitter3": "^5.0.1",
     "exceljs": "^4.4.0",
