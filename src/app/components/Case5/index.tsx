@@ -21,7 +21,7 @@ const Cell = (props: { cellData: DiffCellData }): JSX.Element => {
     'cell-delete': cellData?.diffType === 'origin_delete',
   });
 
-  return <div className={cls}>{cellData?.value?.toString()}</div>;
+  return <div className={cls}>{cellData?.value?.toString().slice(8)}</div>;
 };
 
 const ViewDataRender = memo((props: { viewData: DiffCellData[][]; rowKey: string }): JSX.Element => {
